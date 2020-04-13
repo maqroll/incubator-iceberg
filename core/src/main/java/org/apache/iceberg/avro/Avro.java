@@ -34,6 +34,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.specific.SpecificData;
+import org.apache.iceberg.MetricsAppender;
 import org.apache.iceberg.SchemaParser;
 import org.apache.iceberg.Table;
 import org.apache.iceberg.io.FileAppender;
@@ -159,8 +160,8 @@ public class Avro {
       // add the Iceberg schema to keyValueMetadata
       meta("iceberg.schema", SchemaParser.toJson(schema));
 
-      return new AvroFileAppender<>(
-          AvroSchemaUtil.convert(schema, name), file, createWriterFunc, codec(), metadata, overwrite);
+      return new MetricsAppender<>(new AvroFileAppender<>(
+          AvroSchemaUtil.convert(schema, name), file, createWriterFunc, codec(), metadata, overwrite), schema);
     }
   }
 

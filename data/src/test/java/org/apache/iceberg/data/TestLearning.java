@@ -82,7 +82,7 @@ public class TestLearning {
 
     this.file1Records = new ArrayList<Record>();
 
-    file1Records.add(record.copy(ImmutableMap.of("id", 0L, "data", UUID.randomUUID().toString())));
+    file1Records.add(record.copy(ImmutableMap.of("id", 1L, "data", UUID.randomUUID().toString())));
     DataFile file1 = base.writeFile(sharedTable.location(), format.addExtension("file-1"), file1Records);
 
     this.file2Records = new ArrayList<Record>();

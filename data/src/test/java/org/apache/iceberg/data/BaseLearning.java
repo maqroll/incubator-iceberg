@@ -92,7 +92,7 @@ public class BaseLearning {
     Preconditions.checkNotNull(fileFormat, "Cannot determine format for file: %s", filename);
 
     GenericRecord partition = null;
-
+/*
     Transform<Long, Integer> bucket = Transforms.<Long>bucket(Types.LongType.get(), 10);
     List<Integer> buckets = records.stream().map((e) -> bucket.apply((Long) e.getField("id"))).collect(Collectors.toList());
     Integer min = buckets.stream().min(Comparator.comparingInt(a -> a)).get();
@@ -103,7 +103,7 @@ public class BaseLearning {
       System.out.println(filename + "-> partition:" + min);
     } else {
       System.out.println(filename + "-> partition N/A");
-    }
+    }*/
 
     switch (fileFormat) {
       case AVRO:
