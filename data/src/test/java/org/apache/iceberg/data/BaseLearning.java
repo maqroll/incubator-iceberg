@@ -35,10 +35,15 @@ public class BaseLearning {
 
   private final FileFormat format;
   private final Schema SCHEMA;
+  private Metrics metrics; // last seen Metrics TODO:delete
 
   public BaseLearning(Schema schema, FileFormat format) {
     this.SCHEMA = schema;
     this.format = format;
+  }
+
+  public Metrics getMetrics() {
+    return metrics;
   }
 
   private String sharedTableLocation = null;
@@ -112,18 +117,23 @@ public class BaseLearning {
             .createWriterFunc(DataWriter::create)
             .named(fileFormat.name())
             .build();
+
+        MetricsAppender metricsAppender = new MetricsAppender(avroAppender,SCHEMA);
+
         try {
-          avroAppender.addAll(records);
+          metricsAppender.addAll(records);
         } finally {
-          avroAppender.close();
+          metricsAppender.close();
         }
 
         DataFiles.Builder builder = DataFiles.builder(partitionSpec);
         if (partition != null) { builder.withPartition(partition); }
 
+        metrics = metricsAppender.metrics();
+
         return builder
             .withInputFile(HadoopInputFile.fromPath(path, CONF))
-            .withMetrics(avroAppender.metrics())
+            .withMetrics(metricsAppender.metrics())
             .build();
 
       case PARQUET:
@@ -140,6 +150,8 @@ public class BaseLearning {
         DataFiles.Builder builder1 = DataFiles.builder(partitionSpec);
 
         if (partition != null) { builder1.withPartition(partition);}
+
+        metrics = orcAppender.metrics(); // TODO delete
 
         return builder1
             .withInputFile(HadoopInputFile.fromPath(path, CONF))
